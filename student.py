@@ -44,13 +44,13 @@ def transform(mode):
         transform = transforms.Compose([transforms.Resize(224),
                                        transforms.ToTensor(),
                                        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))],
-                                       ])
+                                       )
         return transform
     elif mode == 'test':
         transform = transforms.Compose([transforms.Resize(224),
                                        transforms.ToTensor(),
                                        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))],
-                                       ])
+                                       )
         return transform
 
 ############################################################################
@@ -62,23 +62,23 @@ class Network(nn.Module):
 
         self.cnn_layers = nn.Sequential(
             # Defining a 2D convolution layer
-            nn.Conv2d(1, 4, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(4),
+            nn.Conv2d(3, 16, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(16),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             # Defining another 2D convolution layer
-            nn.Conv2d(4, 4, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(4),
+            nn.Conv2d(16, 16, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(16),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
         self.linear_layers = nn.Sequential(
-            nn.Linear(4 * 7 * 7, 10)
+            nn.Linear(3136, 256)
         )
         
     def forward(self, t):
-        x = self.cnn_layers(x)
+        x = self.cnn_layers(t)
         x = x.view(x.size(0), -1)
         x = self.linear_layers(x)
         return x
@@ -107,5 +107,5 @@ lossFunc = loss()
 dataset = "./data"
 train_val_split = 0.8
 batch_size = 256
-epochs = 3
+epochs = 50
 optimiser = optim.Adam(net.parameters(), lr=0.001)
