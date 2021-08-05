@@ -41,9 +41,15 @@ def transform(mode):
     You may specify different transforms for training and testing
     """
     if mode == 'train':
-        return transforms.ToTensor()
+        transform = transforms.Compose([transforms.Resize(224),
+                                       transforms.ToTensor(),
+                                       ])
+        return transform
     elif mode == 'test':
-        return transforms.ToTensor()
+        transform = transforms.Compose([transforms.Resize(224),
+                                       transforms.ToTensor(),
+                                       ])
+        return transform
 
 ############################################################################
 ######   Define the Module to process the images and produce labels   ######
