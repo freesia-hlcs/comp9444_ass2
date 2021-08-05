@@ -41,9 +41,17 @@ def transform(mode):
     You may specify different transforms for training and testing
     """
     if mode == 'train':
-        return transforms.ToTensor()
+        transform = transforms.Compose([transforms.Resize(224),
+                                       transforms.ToTensor(),
+                                       transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))],
+                                       )
+        return transform
     elif mode == 'test':
-        return transforms.ToTensor()
+        transform = transforms.Compose([transforms.Resize(224),
+                                       transforms.ToTensor(),
+                                       transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))],
+                                       )
+        return transform
 
 ############################################################################
 ######   Define the Module to process the images and produce labels   ######
@@ -51,9 +59,29 @@ def transform(mode):
 class Network(nn.Module):
     def __init__(self):
         super().__init__()
+
+        self.cnn_layers = nn.Sequential(
+            # Defining a 2D convolution layer
+            nn.Conv2d(3, 16, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(16),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            # Defining another 2D convolution layer
+            nn.Conv2d(16, 16, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(16),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+        )
+
+        self.linear_layers = nn.Sequential(
+            nn.Linear(3136, 256)
+        )
         
     def forward(self, t):
-        pass
+        x = self.cnn_layers(t)
+        x = x.view(x.size(0), -1)
+        x = self.linear_layers(x)
+        return x
 
 
 class loss(nn.Module):
@@ -64,9 +92,11 @@ class loss(nn.Module):
     """
     def __init__(self):
         super(loss, self).__init__()
+        self.loss = nn.CrossEntropyLoss()
 
     def forward(self, output, target):
-        pass
+        result = self.loss(output, target)
+        return result
 
 
 net = Network()
@@ -77,5 +107,5 @@ lossFunc = loss()
 dataset = "./data"
 train_val_split = 0.8
 batch_size = 256
-epochs = 3
+epochs = 50
 optimiser = optim.Adam(net.parameters(), lr=0.001)
