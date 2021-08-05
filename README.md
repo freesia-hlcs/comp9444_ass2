@@ -1,5 +1,5 @@
 # comp9444_ass2
-COMP9444 Neural Networks and Deep Learning
+**COMP9444 Neural Networks and Deep Learning
 Term 2, 2021
 Project 2 - Simpsons Character Classification
 Due: Friday 6 August, 23:59 pm
