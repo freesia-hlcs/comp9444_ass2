@@ -45,11 +45,11 @@ At the top of your code, in a block of comments, you must provide a brief answer
 
 Briefly describe how your program works, and explain any design and training decisions you made along the way.
 You should try to cover the following points in your Answer:
-a. choice of architecture, algorithms and enhancements (if any)
-b. choice of loss function and optimiser
-c. choice of image transformations
-d. tuning of metaparameters
-e. use of validation set, and any other steps taken to improve generalization and avoid overfitting
+1. choice of architecture, algorithms and enhancements (if any)
+2. choice of loss function and optimiser
+3. choice of image transformations
+4. tuning of metaparameters
+5. use of validation set, and any other steps taken to improve generalization and avoid overfitting
 
 If you wish to refer to any graphs or figures in your Answer, you can put these in a file called hw2.pdf, and include it in your submission.
 
