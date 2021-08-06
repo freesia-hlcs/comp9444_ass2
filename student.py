@@ -23,6 +23,7 @@ import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
 
+
 """
    Answer to Question:
 
@@ -71,16 +72,23 @@ class Network(nn.Module):
             nn.BatchNorm2d(19),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
+            # Defining another 2D convolution layer
+            nn.Conv2d(19, 29, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(29),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
         self.linear_layers = nn.Sequential(
-            nn.Linear(3724, 256)
+            nn.Linear(464, 3724)
         )
         
     def forward(self, t):
+
         x = self.cnn_layers(t)
         x = x.view(x.size(0), -1)
         x = self.linear_layers(x)
+
         return x
 
 
@@ -109,3 +117,6 @@ train_val_split = 0.9
 batch_size = 256
 epochs = 100
 optimiser = optim.Adam(net.parameters(), lr=0.001)
+
+
+
