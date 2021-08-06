@@ -62,19 +62,19 @@ class Network(nn.Module):
 
         self.cnn_layers = nn.Sequential(
             # Defining a 2D convolution layer
-            nn.Conv2d(3, 16, kernel_size=5, stride=2, padding=3, bias=False),
-            nn.BatchNorm2d(16),
+            nn.Conv2d(3, 9, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(9),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             # Defining another 2D convolution layer
-            nn.Conv2d(16, 16, kernel_size=5, stride=2, padding=3, bias=False),
-            nn.BatchNorm2d(16),
+            nn.Conv2d(9, 19, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(19),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
         self.linear_layers = nn.Sequential(
-            nn.Linear(3136, 256)
+            nn.Linear(3724, 256)
         )
         
     def forward(self, t):
@@ -105,7 +105,7 @@ lossFunc = loss()
 #######              Metaparameters and training options              ######
 ############################################################################
 dataset = "./data"
-train_val_split = 0.8
+train_val_split = 0.9
 batch_size = 256
-epochs = 50
+epochs = 100
 optimiser = optim.Adam(net.parameters(), lr=0.001)
