@@ -75,20 +75,26 @@ class Network(nn.Module):
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             # Defining another 2D convolution layer
-            nn.Conv2d(16, 16, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm2d(16),
+
+            nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
-            nn.Conv2d(16, 16, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm2d(16),
+            nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(32),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
         )
 
         self.linear_layers = nn.Sequential(
-            nn.Linear(16*4*4, 14)
+            nn.Linear(32*2*2, 14)
         )
         '''
 
@@ -204,7 +210,7 @@ lossFunc = loss()
 dataset = "./data"
 train_val_split = 0.9
 batch_size = 64
-epochs = 50
+epochs = 70
 optimiser = optim.Adam(net.parameters(), lr=0.001)
 
 
