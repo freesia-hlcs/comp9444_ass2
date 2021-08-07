@@ -91,10 +91,15 @@ class Network(nn.Module):
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
+            nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(32),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
         )
 
         self.linear_layers = nn.Sequential(
-            nn.Linear(32*2*2, 14)
+            nn.Linear(32*1*1, 14)
         )
         '''
 
@@ -171,6 +176,7 @@ class Network(nn.Module):
         
     def forward(self, t):
         x = self.cnn_layers(t)
+
         x = x.view(x.size(0), -1)
         x = self.linear_layers(x)
 
