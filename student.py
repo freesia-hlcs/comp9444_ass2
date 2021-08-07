@@ -57,10 +57,12 @@ def transform(mode):
 ############################################################################
 ######   Define the Module to process the images and produce labels   ######
 ############################################################################
+
+
 class Network(nn.Module):
     def __init__(self):
         super().__init__()
-
+        '''
         self.cnn_layers = nn.Sequential(
             # Defining a 2D convolution layer
             nn.Conv2d(3, 9, kernel_size=5, stride=2, padding=3, bias=False),
@@ -82,14 +84,93 @@ class Network(nn.Module):
         self.linear_layers = nn.Sequential(
             nn.Linear(464, 3724)
         )
+        '''
+
+        # torch.Size([256, 3, 224, 224])
+        self.cnn_layer1 = nn.Sequential(
+            nn.Conv2d(3, 16, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(16),
+            nn.ReLU(inplace=True),
+
+            nn.Conv2d(16, 16, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(16),
+            nn.ReLU(inplace=True),
+
+            nn.Conv2d(16, 16, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(16),
+            nn.ReLU(inplace=True),
+
+
+        )
+
+        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)              # 114
+
+
+        self.cnn_layer2 = nn.Sequential(
+            nn.Conv2d(16, 32, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(32),
+            nn.ReLU(inplace=True),
+
+            nn.Conv2d(32, 32, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(32),
+            nn.ReLU(inplace=True),
+
+            nn.Conv2d(32, 32, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(32),
+            nn.ReLU(inplace=True),
+
+        )
+
+        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)              # 59
+
+        self.cnn_layer3 = nn.Sequential(
+            nn.Conv2d(32, 64, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(64),
+            nn.ReLU(inplace=True),
+
+            nn.Conv2d(64, 64, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(64),
+            nn.ReLU(inplace=True),
+
+            nn.Conv2d(64, 64, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(64),
+            nn.ReLU(inplace=True),
+
+            nn.Conv2d(64, 64, kernel_size=5, stride=2, padding=3, bias=False),
+            nn.BatchNorm2d(64),
+            nn.ReLU(inplace=True),
+
+
+        )
+
+        self.pool3 = nn.MaxPool2d(kernel_size=2, stride=2)            # 32
+
+
+        self.net = nn.Sequential(self.cnn_layer1, self.pool1, self.cnn_layer2, self.pool2, self.cnn_layer3, self.pool3)
+
+
+        self.linear_layers = nn.Sequential(
+            nn.Linear(32*32*64, 120),
+            nn.Linear(120, 9),
+
+        )
+
         
     def forward(self, t):
-
+        '''
         x = self.cnn_layers(t)
         x = x.view(x.size(0), -1)
         x = self.linear_layers(x)
 
         return x
+        '''
+
+        output = self.net(t)
+        output = output.view(output.size(0), -1)
+        output = self.linear_layers(output)
+
+        return output
+
 
 
 class loss(nn.Module):
@@ -115,7 +196,7 @@ lossFunc = loss()
 dataset = "./data"
 train_val_split = 0.9
 batch_size = 256
-epochs = 100
+epochs = 50
 optimiser = optim.Adam(net.parameters(), lr=0.001)
 
 
