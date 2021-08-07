@@ -42,13 +42,13 @@ def transform(mode):
     You may specify different transforms for training and testing
     """
     if mode == 'train':
-        transform = transforms.Compose([transforms.Resize(224),
+        transform = transforms.Compose([transforms.Resize(64),
                                        transforms.ToTensor(),
                                        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))],
                                        )
         return transform
     elif mode == 'test':
-        transform = transforms.Compose([transforms.Resize(224),
+        transform = transforms.Compose([transforms.Resize(64),
                                        transforms.ToTensor(),
                                        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))],
                                        )
@@ -62,27 +62,33 @@ def transform(mode):
 class Network(nn.Module):
     def __init__(self):
         super().__init__()
-        '''
+
         self.cnn_layers = nn.Sequential(
             # Defining a 2D convolution layer
-            nn.Conv2d(3, 9, kernel_size=5, stride=2, padding=3, bias=False),
-            nn.BatchNorm2d(9),
+            nn.Conv2d(3, 8, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(8),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             # Defining another 2D convolution layer
-            nn.Conv2d(9, 19, kernel_size=5, stride=2, padding=3, bias=False),
-            nn.BatchNorm2d(19),
+            nn.Conv2d(8, 16, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(16),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             # Defining another 2D convolution layer
-            nn.Conv2d(19, 29, kernel_size=5, stride=2, padding=3, bias=False),
-            nn.BatchNorm2d(29),
+            nn.Conv2d(16, 16, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(16),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(16, 16, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.BatchNorm2d(16),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
         )
 
         self.linear_layers = nn.Sequential(
-            nn.Linear(464, 3724)
+            nn.Linear(16*4*4, 14)
         )
         '''
 
@@ -103,7 +109,7 @@ class Network(nn.Module):
 
         )
 
-        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)              # 114
+        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)              # 34
 
 
         self.cnn_layer2 = nn.Sequential(
@@ -121,7 +127,7 @@ class Network(nn.Module):
 
         )
 
-        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)              # 59
+        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)              # 19
 
         self.cnn_layer3 = nn.Sequential(
             nn.Conv2d(32, 64, kernel_size=5, stride=2, padding=3, bias=False),
@@ -143,21 +149,21 @@ class Network(nn.Module):
 
         )
 
-        self.pool3 = nn.MaxPool2d(kernel_size=2, stride=2)            # 32
+        self.pool3 = nn.MaxPool2d(kernel_size=2, stride=2)            # 12
 
 
         self.net = nn.Sequential(self.cnn_layer1, self.pool1, self.cnn_layer2, self.pool2, self.cnn_layer3, self.pool3)
 
 
         self.linear_layers = nn.Sequential(
-            nn.Linear(32*32*64, 120),
-            nn.Linear(120, 9),
+            nn.Linear(32*64, 14*32),
+            nn.ReLU(),
+            nn.Linear(14*32, 14)
 
         )
-
+        '''
         
     def forward(self, t):
-        '''
         x = self.cnn_layers(t)
         x = x.view(x.size(0), -1)
         x = self.linear_layers(x)
@@ -166,12 +172,14 @@ class Network(nn.Module):
         '''
 
         output = self.net(t)
+        print(t.size())
         output = output.view(output.size(0), -1)
+        print(output.size())
         output = self.linear_layers(output)
 
         return output
 
-
+        '''
 
 class loss(nn.Module):
     """
@@ -195,7 +203,7 @@ lossFunc = loss()
 ############################################################################
 dataset = "./data"
 train_val_split = 0.9
-batch_size = 256
+batch_size = 64
 epochs = 50
 optimiser = optim.Adam(net.parameters(), lr=0.001)
 
