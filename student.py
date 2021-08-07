@@ -65,34 +65,39 @@ class Network(nn.Module):
 
         self.cnn_layers = nn.Sequential(
             # Defining a 2D convolution layer
-            nn.Conv2d(3, 8, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.Conv2d(3, 8, kernel_size=3, stride=1, padding=2, bias=False),
             nn.BatchNorm2d(8),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             # Defining another 2D convolution layer
-            nn.Conv2d(8, 16, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.Conv2d(8, 16, kernel_size=3, stride=1, padding=2, bias=False),
             nn.BatchNorm2d(16),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             # Defining another 2D convolution layer
 
-            nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=2, bias=False),
             nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
-            nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=2, bias=False),
             nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
-            nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1, bias=False),
+            nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=2, bias=False),
+            nn.BatchNorm2d(32),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=2, bias=False),
             nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
 
         )
-
+        # torch.Size([64, 3, 2, 2])
         self.linear_layers = nn.Sequential(
             nn.Linear(32*2*2, 14)
         )
@@ -164,7 +169,7 @@ class Network(nn.Module):
         self.linear_layers = nn.Sequential(
             nn.Linear(32*64, 14*32),
             nn.ReLU(),
-            nn.Linear(14*32, 14)
+            nn.Linear(1*1*64, 14)
 
         )
         '''
@@ -210,7 +215,7 @@ lossFunc = loss()
 dataset = "./data"
 train_val_split = 0.9
 batch_size = 64
-epochs = 70
+epochs = 100
 optimiser = optim.Adam(net.parameters(), lr=0.001)
 
 
